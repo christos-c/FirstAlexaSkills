@@ -1,25 +1,90 @@
 {
-  "intents": [
-    {
-      "intent": "saySomethingIntent"
-    },
-    {
-      "intent": "personalFactIntent",
-      "slots": [
-        {
-          "name": "Person",
-          "type": "LIST_OF_PERSON"
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "team yellow",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "saySomethingIntent",
+                    "slots": [],
+                    "samples": [
+                        "tell me something",
+                        "say something"
+                    ]
+                },
+                {
+                    "name": "personalFactIntent",
+                    "slots": [
+                        {
+                            "name": "Person",
+                            "type": "Person"
+                        }
+                    ],
+                    "samples": [
+                        "tell me something about {Person}",
+                        "tell me a fact about {Person}"
+                    ]
+                },
+                {
+                    "name": "whatsCoolIntent",
+                    "slots": [
+                        {
+                            "name": "Subject",
+                            "type": "Subject"
+                        }
+                    ],
+                    "samples": [
+                        "what is the best {Subject}",
+                        "what is the coolest {Subject}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "Person",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "jason"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "catherine"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Subject",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "movie"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
-      ]
-    },
-    {
-      "intent": "whatsCoolIntent",
-      "slots": [
-        {
-          "name": "Subject",
-          "type": "LIST_OF_SUBJECT"
-        }
-      ]
     }
-  ]
 }

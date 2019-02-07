@@ -1,0 +1,57 @@
+#!/Users/chrchrs/anaconda3/bin/python
+"""
+Commandline script to update (upload) AWS Lambda functions using code in a local directory
+"""
+
+import argparse
+import os
+import shutil
+import tempfile
+
+import boto3
+
+
+def input_arguments():
+    parser = argparse.ArgumentParser(
+        description='Upload/Update/Test tool for AWS Lambda functions (Alexa ASK)')
+    # add more arguments here:
+    parser.add_argument("function_name", help="unique name of the AWS Lambda function")
+    parser.add_argument("--user", default="lambdaUser", help="AWS IAM username for developing AWS Lambda functions")
+    parser.add_argument("--region", default="eu-west-1", help="AWS region where the Lambda function resides")
+    parser.add_argument("--dir", default=".", help="Directory containing the Lambda function")
+    (args, additional) = parser.parse_known_args()
+    return args, additional
+
+
+def create_zipfile(dir_path):
+    zip_dir = tempfile.mkdtemp()
+    ext = 'zip'
+    function_zip = "function"  # will produce a zip archive
+    shutil.make_archive(os.path.join(zip_dir, function_zip), ext, dir_path)
+    return os.path.join(zip_dir, function_zip + '.' + ext)
+
+
+def update_lambda(client, function_name, dir_path):
+    zip_file = ""
+    try:
+        zip_file = create_zipfile(dir_path)
+        zip_file_handle = open(zip_file, 'rb')
+        client.update_function_code(FunctionName=function_name, ZipFile=zip_file_handle.read(), Publish=True)
+    except Exception as e:
+        print(str(e))
+    finally:
+        # remove the temp dir containing the zipfile
+        if os.path.exists(zip_file):
+            shutil.rmtree(os.path.dirname(zip_file))
+
+
+def main(args):
+    """Updates the Lambda function (only if it exists)"""
+    session = boto3.Session(profile_name=args.user, region_name=args.region)
+    client = session.client('lambda')
+    update_lambda(client, args.function_name, args.dir)
+
+
+if __name__ == "__main__":
+    (myargs, myadditional) = input_arguments()
+    main(myargs)
